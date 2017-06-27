@@ -29,7 +29,7 @@ def mad(arr):
 class TDPRegressor:
 	def __init__(self, features=[], target=[], model='ols',tag='train'):
 		self.tag = tag+'_'+model
-		self.outdir = 'fig/final_v5/'+self.tag
+		self.outdir = 'fig/Results'
 		self.model=model
 		import os
 		os.system('mkdir -p '+self.outdir)
@@ -122,7 +122,7 @@ class TDPRegressor:
 		axarr.set_yscale('linear')
 		axarr.set_xlim(xmin,xmax)
 		axarr.set_ylim(ymin=10,ymax=15000)
-		fig.savefig(self.outdir+'/data_model_vs_x.png')
+		fig.savefig(self.outdir+'/'+self.tag+'_data_model_vs_x.png')
 
 	def PlotPerformance(self,xmin=1,xmax=5000,xc='linear',plotLeg=True):
 		# convenient
@@ -146,7 +146,7 @@ class TDPRegressor:
 		axarr.yaxis.set_tick_params(labelsize=20)
 		axarr.set_xlabel('Volume (cm^3)', fontsize=20)
 		axarr.set_ylabel('Build Time (hours)', fontsize=20)
-		fig.savefig(self.outdir+'/data_model_data_vs_x.png')
+		fig.savefig(self.outdir+'/'+self.tag+'_data_model_data_vs_x.png')
 
 		fig, axarr = plt.subplots(nrows=1, ncols=1, figsize=(7,7), sharex=False)
 		axarr.scatter(X[:,0],y-yhat,color='red',alpha=0.2)
@@ -164,7 +164,7 @@ class TDPRegressor:
 		if plotLeg:
 			axarr.legend(loc='lower left',framealpha=0,fontsize=16)
 
-		fig.savefig(self.outdir+'/data_model_residual_vs_x.png')
+		fig.savefig(self.outdir+'/'+self.tag+'_data_model_residual_vs_x.png')
 
 	def export_model(self):
 		from sklearn.externals import joblib
@@ -257,6 +257,7 @@ def setup_df(data):
 	print 'after conversion:', data.t[1]
 
 	# add branches
+	data['sumV']=data['Vfil'] + data['Vsup']
 	data['diffVbbVmes']=data['Vbb'] - data['Vmes']
 	data['diffVchVmes']=data['Vch'] - data['Vmes']
 	data['rSaVmes']=data['Sa'].div(data['Vmes'])
