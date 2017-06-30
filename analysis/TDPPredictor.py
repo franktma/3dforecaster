@@ -9,6 +9,9 @@ import sklearn.linear_model as skl_lm
 from sklearn.linear_model import HuberRegressor, Ridge
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble.forest import RandomForestRegressor
+
 # sklearn metrics
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import statsmodels.api as sm
@@ -29,7 +32,8 @@ def mad(arr):
 class TDPRegressor:
 	def __init__(self, features=[], target=[], model='ols',tag='train'):
 		self.tag = tag+'_'+model
-		self.outdir = 'fig/Results'
+		#self.outdir = 'fig/Results'
+		self.outdir = 'fig/XChecks'
 		self.model=model
 		import os
 		os.system('mkdir -p '+self.outdir)
@@ -45,6 +49,11 @@ class TDPRegressor:
 			self.regr = skl_lm.LinearRegression()
 		elif model=='huber':
 			self.regr = HuberRegressor(fit_intercept=True, alpha=0.0, max_iter=100, epsilon=1.35)
+		elif model=='tree':
+			self.regr = DecisionTreeRegressor(max_depth=6)
+		elif model=='forest':
+			self.regr = RandomForestRegressor(n_estimators=10,bootstrap=True, criterion='mae', max_depth=10, max_features='auto',
+				min_samples_leaf=5, min_samples_split=10, random_state=0)
 		print self
 
 
@@ -64,8 +73,19 @@ class TDPRegressor:
 		# Fit
 		X_scaled = self.X_scaled
 		self.regr.fit(X_scaled,self.y)
-		print(self.regr.intercept_)
-		print(self.regr.coef_)
+		if self.model =='ols' or self.model=='hubert':
+			print 'coeffecients:'
+			print(self.regr.intercept_)
+			print(self.regr.coef_)
+		if self.model == 'tree':
+			print 'tree feature importances'
+			print self.regr.feature_importances_
+		if self.model == 'forest':
+			#print 'random forest estimators'
+			#print self.regr.estimators_
+			print 'random forest nfeatures:', self.regr.n_features_
+			print 'random forest feature importances'
+			print self.regr.feature_importances_
 
 	def predict(self):
 		X_scaled = self.X_scaled
