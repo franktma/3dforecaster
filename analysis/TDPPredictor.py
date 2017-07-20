@@ -360,4 +360,3 @@ def setup_df(data):
     data['rVchVmes'] = data['Vch'].div(data['Vmes'])
     data['rXVmes'] = data['X'].div(data['Vmes'])
     data['rZVmes'] = data['Z'].div(data['Vmes'])
-    data.info()
